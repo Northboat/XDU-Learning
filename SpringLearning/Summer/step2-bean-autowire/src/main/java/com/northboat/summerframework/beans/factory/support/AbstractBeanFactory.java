@@ -1,0 +1,26 @@
+package com.northboat.summerframework.beans.factory.support;
+
+import com.northboat.summerframework.beans.BeansException;
+import com.northboat.summerframework.beans.factory.BeanFactory;
+import com.northboat.summerframework.beans.factory.config.BeanDefinition;
+
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+
+    // 实现 BeanFactory 的 getBean 接口
+    @Override
+    public Object getBean(String beanName){
+        Object bean = getSingleton(beanName);
+        if(bean != null){
+            return bean;
+        }
+        // 当 Bean Object 并未初始化，使用 Class 对象进行实例化
+        BeanDefinition beanDefinition = getBeanDefinition(beanName);
+        return createBean(beanName, beanDefinition);
+    }
+
+    // 获取 Bean Class 实例，用于创建 Bean Object
+    protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;
+
+    // 创建 Object 并存入单例的 Map 中
+    protected abstract Object createBean(String beanName, BeanDefinition beanDefinition) throws BeansException;
+}
